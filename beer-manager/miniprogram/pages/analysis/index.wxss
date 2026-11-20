@@ -1,0 +1,127 @@
+.eyebrow {
+  font-size: 22rpx;
+  font-weight: 600;
+  letter-spacing: 3rpx;
+  color: var(--red);
+  margin: 6rpx 0 14rpx
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 18rpx;
+  margin: 24rpx 0
+}
+
+.period-nav {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  gap: 18rpx;
+  margin: 28rpx 0
+}
+
+.period-arrow {
+  height: 104rpx;
+  width: 104rpx;
+  line-height: 100rpx;
+  font-size: 44rpx;
+  background: #fff;
+  color: #596575
+}
+
+.period-label {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx
+}
+
+.chart-card {
+  padding: 28rpx
+}
+
+.section-head {
+  font-size: 30rpx;
+  font-weight: 650;
+  line-height: 1.5
+}
+
+.chart-tabs {
+  display: flex;
+  gap: 12rpx;
+  margin: 24rpx 0
+}
+
+.chart-tab {
+  flex: 1;
+  padding: 24rpx 12rpx;
+  min-height: 104rpx;
+  font-size: 24rpx;
+  background: #f3f5f7;
+  color: #788391
+}
+
+.chart-tab.chosen {
+  background: #fff1f2;
+  color: var(--red);
+  font-weight: 600
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-wrap: wrap;
+  color: #657181;
+  font-size: 22rpx
+}
+
+.legend-dot {
+  height: 12rpx;
+  width: 12rpx;
+  background: #ae2632;
+  border-radius: 3rpx
+}
+
+.legend-dot.green {
+  background: #267652;
+  margin-left: 18rpx
+}
+
+.legend-dot.orange {
+  background: #cd852d
+}
+
+.line {
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #edf0f3
+}
+
+.rank-row {
+  margin-top: 28rpx
+}
+
+.rank-track {
+  height: 10rpx;
+  border-radius: 4rpx;
+  background: #f2f4f7;
+  margin: 16rpx 0 10rpx;
+  overflow: hidden
+}
+
+.rank-fill {
+  height: 100%;
+  background: #ae2632;
+  border-radius: 4rpx
+}
+
+.rank-fill.green {
+  background: #319276
+}
+
+.line, .rank-row .row { flex-wrap: wrap; align-items: baseline; gap: 12rpx 16rpx; }
+.line .number, .rank-row .number { font-size: 36rpx; overflow-wrap: anywhere; }
+.period-arrow { flex-shrink: 0; }
+.chart-tab { width: 0; min-width: 0; }
+
+.daily-toggle { min-height: 104rpx; }

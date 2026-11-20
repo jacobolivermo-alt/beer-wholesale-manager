@@ -1,0 +1,8 @@
+.tabbar { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: #fff; border-top: 1rpx solid #e6e8e4; padding: 14rpx 8rpx calc(14rpx + env(safe-area-inset-bottom)); z-index: 100; }
+.tab { flex: 1; text-align: center; color: #717b89; min-height: 104rpx; font-size: 24rpx; }
+.icon-slot { height: 60rpx; margin-bottom: 6rpx; }
+.nav-icon { width: 52rpx; height: 52rpx; margin: 4rpx auto; }
+.selected { color: #ae2632; font-weight: 600; }
+.create-icon { background: #ae2632; color: #fff; width: 88rpx; height: 64rpx; border-radius: 12rpx; margin: -4rpx auto 0; line-height: 62rpx; font-size: 46rpx; }
+.center { color: #ae2632; }
+.tab-label { line-height: 32rpx; }

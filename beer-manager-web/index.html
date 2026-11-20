@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ae2632">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="啤酒管家">
+  <meta name="application-version" content="1.5.4">
+  <title>啤酒批发管家</title>
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+  <header id="header"></header>
+  <main id="app"></main>
+  <nav id="tabs" aria-label="底部导航"></nav>
+  <div id="toast" role="status"></div>
+  <dialog id="review">
+    <header>
+      <h2 id="review-title"></h2><button type="button" data-close>返回修改</button>
+    </header>
+    <div id="review-body"></div>
+    <footer>
+      <p id="review-error" class="form-error" role="alert" hidden></p><button class="primary"
+        id="review-save">确认保存</button>
+    </footer>
+  </dialog>
+  <dialog id="photo"><button data-photo-close>关闭</button><img id="photo-image" alt="收据预览"></dialog><input type="file"
+    id="receipt-file" accept="image/*" multiple hidden><input type="file" id="backup-file"
+    accept="application/json,.json" hidden>
+  <dialog id="picker">
+    <header><h2 id="picker-title">选择酒吧</h2><button type="button" data-picker-close>取消</button></header>
+    <div class="picker-content"><input id="picker-search" type="search" placeholder="搜索酒吧名称" aria-label="搜索酒吧名称"><div id="picker-list"></div></div>
+  </dialog>
+  <script src="bootstrap.js"></script>
+  <script src="adapter.js"></script>
+  <script src="services.js"></script>
+  <script src="app.js"></script>
+  <script src="account.js"></script>
+</body>
+
+</html>

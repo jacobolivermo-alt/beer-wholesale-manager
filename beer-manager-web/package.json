@@ -1,0 +1,11 @@
+{
+  "name": "beer-manager-web",
+  "version": "1.5.4",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build-services.cjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

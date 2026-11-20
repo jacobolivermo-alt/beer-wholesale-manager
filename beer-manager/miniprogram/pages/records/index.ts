@@ -1,0 +1,4 @@
+import { RecordType } from '../../types/models';
+import { recordService } from '../../services/recordService';
+import { tab } from '../../utils/ui';
+Page({ openRecord(e: UIEvent) { wx.navigateTo({ url: '/pages/record-detail/index?id=' + e.currentTarget.dataset.id }); }, data: { filter: 'ALL' as RecordType | 'ALL' | 'INVENTORY', filters: [{ value: 'ALL', label: '全部' }, { value: 'DELIVERY', label: '送货' }, { value: 'BOTTLE_RETURN', label: '回瓶' }, { value: 'PAYMENT', label: '收款' }, { value: 'INVENTORY', label: '库存' }], records: recordService.list() }, onShow() { tab(this, 3); this.refresh(); }, refresh() { this.setData({ records: recordService.list(this.data.filter) }); }, filter(e: UIEvent) { this.setData({ filter: e.currentTarget.dataset.value as RecordType | 'ALL' | 'INVENTORY' }); this.refresh(); } });

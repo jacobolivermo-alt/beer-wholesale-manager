@@ -1,0 +1,1 @@
+Component({ properties: { title: { type: String, value: '' }, description: { type: String, value: '' }, customer: { type: String, value: '' }, time: { type: String, value: '' }, amount: { type: String, value: '' }, quantity: { type: String, value: '' }, kind: { type: String, value: '' }, unit: { type: String, value: '箱' }, receiptCount: { type: Number, value: 0 } } });

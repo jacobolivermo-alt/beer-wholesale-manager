@@ -1,0 +1,3 @@
+<view class="product-row"><text class="product-name">{{name}}</text>
+  <view class="product-stock"><text class="stock {{warning?'warning':''}}">{{quantity}}<text class="small muted"> 箱</text></text><text wx:if="{{warning}}" class="tag">库存偏低</text></view>
+</view>

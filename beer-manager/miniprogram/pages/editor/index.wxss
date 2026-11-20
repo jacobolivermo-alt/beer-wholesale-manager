@@ -1,0 +1,23 @@
+.form {
+  margin-top: 30rpx;
+}
+
+.price-title {
+  margin-top: 0;
+}
+
+.price-field {
+  margin-top: 26rpx;
+}
+
+.price-field .input {
+  margin-top: 14rpx;
+}
+
+.delete-customer {
+  width: 100%;
+  margin: 24rpx 0;
+}
+
+.price-field .row { flex-wrap: wrap; align-items: baseline; }
+.price-field .row .small { font-size: 24rpx; }

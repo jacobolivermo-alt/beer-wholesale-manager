@@ -1,0 +1,13 @@
+<view class="page tab-page">
+  <view class="row">
+    <view>
+      <view class="title">酒吧</view>
+      <view class="subtitle">最近操作的酒吧排在前面</view>
+    </view><text class="danger link-action" bindtap="add">管理 ›</text>
+  </view><input class="input search" placeholder="搜索酒吧名称" value="{{search}}" bindinput="search" />
+  <view class="small muted count">共 {{customers.length}} 家酒吧</view>
+  <customer-card wx:for="{{customers}}" wx:key="id" name="{{item.name}}" stock="{{item.stockTotal}}"
+    loose="{{item.looseTotal}}" bottles="{{item.emptyBottleCount}}" amount="{{item.amountText}}"
+    owing="{{item.receivable>0}}" data-id="{{item.id}}" bindtap="open" />
+  <empty-state wx:if="{{!customers.length}}" text="没有找到酒吧" hint="换个关键词，或新增酒吧" />
+</view>

@@ -1,0 +1,9 @@
+<view class="record">
+  <view class="row record-header"><text class="record-title">{{title}}</text><text class="record-time">{{time}}</text></view>
+  <view class="row record-main"><text class="customer grow">{{customer}}</text>
+    <text class="record-value {{kind==='PAYMENT'?'success':kind==='DELIVERY'?'danger':''}}" wx:if="{{kind==='DELIVERY'||kind==='PAYMENT'}}">{{kind==='PAYMENT'?'−':''}}¥{{amount}}</text>
+    <text class="record-value" wx:else>{{quantity}}<text class="record-unit"> {{unit}}</text></text>
+  </view>
+  <view class="description">{{description}}</view>
+  <view wx:if="{{receiptCount}}" class="receipt-note">收据 {{receiptCount}} 张 · 点击查看</view>
+</view>

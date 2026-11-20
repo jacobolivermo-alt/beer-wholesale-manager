@@ -1,0 +1,63 @@
+<view class="page with-actions">
+  <view class="title">{{id?'编辑':'新增'}}{{kind==='PRODUCT'?'商品':'酒吧'}}</view>
+  <view class="card form">
+    <view class="field">
+      <view class="label">{{kind==='PRODUCT'?'商品':'酒吧'}}名称 *</view><input class="input" maxlength="40" data-field="name"
+        value="{{name}}" bindinput="input" placeholder="请输入名称" />
+    </view>
+    <block wx:if="{{kind==='PRODUCT'}}">
+      <view class="field">
+        <view class="label">默认售价（元 / 箱）*</view><input class="input" type="digit" maxlength="12" data-field="price"
+          value="{{price}}" bindinput="input" placeholder="如 72" />
+      </view>
+      <view class="field">
+        <view class="label">当前库存（箱）*</view><quantity-stepper value="{{stock * 1}}" bind:change="stockChange" />
+      </view>
+      <view class="field">
+        <view class="label">低库存提醒值（箱）*</view><input class="input" type="number" maxlength="7" data-field="threshold"
+          value="{{threshold}}" bindinput="input" />
+      </view>
+      <view class="field">
+        <view class="label">每箱瓶数 *</view><input class="input" type="number" maxlength="5" data-field="bottlesPerCase"
+          value="{{bottlesPerCase}}" bindinput="input" />
+        <view class="footnote">默认 24 瓶。修改仅影响之后的送货，历史空瓶不变。</view>
+      </view>
+      <view class="footnote">库存低于提醒值时显示橙色提示。</view>
+    </block>
+    <block wx:else>
+      <view class="field">
+        <view class="label">联系人</view><input class="input" maxlength="30" data-field="contactName"
+          value="{{contactName}}" bindinput="input" />
+      </view>
+      <view class="field">
+        <view class="label">电话</view><input class="input" type="number" maxlength="20" data-field="phone"
+          value="{{phone}}" bindinput="input" />
+      </view>
+      <view class="field">
+        <view class="label">地址</view><input class="input" maxlength="120" data-field="address" value="{{address}}"
+          bindinput="input" />
+      </view>
+      <view class="field">
+        <view class="label">备注</view><input class="input" maxlength="200" data-field="remark" value="{{remark}}"
+          bindinput="input" />
+      </view>
+    </block>
+  </view>
+  <view wx:if="{{kind==='CUSTOMER'}}" class="card">
+    <view class="section-title price-title">酒吧专属售价</view>
+    <view class="footnote">按商品设置每箱实售价，已包含优惠。留空使用默认售价；送货时可再调整。</view>
+    <view wx:for="{{prices}}" wx:key="productId" class="field price-field">
+      <view class="row"><text>{{item.name}}</text><text class="small muted">默认 ¥{{item.defaultPrice}}/箱</text></view>
+      <input class="input" type="digit" maxlength="12" value="{{item.value}}" placeholder="留空使用默认售价"
+        data-id="{{item.productId}}" bindinput="priceInput" />
+    </view>
+  </view>
+  <button wx:if="{{id}}" class="secondary danger delete-customer" bindtap="remove"
+    disabled="{{confirming}}">删除{{kind==='PRODUCT'?'商品':'酒吧'}}</button>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view class="fixed-actions"><button class="primary" bindtap="save"
+      disabled="{{confirming}}">保存{{kind==='PRODUCT'?'商品':'酒吧'}}</button></view>
+</view>
+
+<confirm-dialog visible="{{dialogVisible}}" title="{{dialogTitle}}" rows="{{dialogRows}}" bind:accept="acceptDialog"
+  bind:cancel="cancelDialog" />

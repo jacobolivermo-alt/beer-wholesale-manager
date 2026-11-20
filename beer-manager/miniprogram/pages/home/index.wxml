@@ -1,0 +1,30 @@
+<view class="page tab-page">
+  <view class="row">
+    <view>
+      <view class="title">啤酒批发管家</view>
+      <view class="subtitle">库存、空瓶与账款，一眼看清</view>
+    </view>
+  </view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <view class="stats">
+    <stat-card label="今日送货" value="{{stats.todayDelivery}}" unit="箱" />
+    <stat-card label="今日收款" value="¥{{stats.todayPayment}}" tone="success" />
+    <stat-card label="当前应收" value="¥{{stats.receivable}}" tone="danger" />
+    <stat-card label="待回空瓶" value="{{stats.emptyBottles}}" unit="瓶" />
+  </view><button class="primary delivery-shortcut" bindtap="deliver">＋ 记一笔送货</button>
+  <view class="row">
+    <view class="section-title">仓库库存</view><text class="small danger link-action" bindtap="purchase">进货入库 ›</text>
+  </view>
+  <view class="card inventory">
+    <product-row wx:for="{{products}}" wx:key="id" name="{{item.name}}" quantity="{{item.stock}}"
+      warning="{{item.stock < item.lowStockThreshold}}" />
+    <empty-state wx:if="{{!products.length}}" text="还没有商品" hint="请在「我的」中新增" />
+  </view>
+  <view class="section-title">需要注意</view>
+  <view class="card attention" wx:if="{{attention.length}}">
+    <view class="row attention-row" wx:for="{{attention}}" wx:key="index" data-id="{{item.id}}" bindtap="openCustomer">
+      <text class="attention-name">{{item.name}}</text><text class="attention-value {{item.tone}}">{{item.detail}} ›</text>
+    </view>
+  </view>
+  <empty-state wx:else text="目前没有需要处理的提醒" />
+</view>

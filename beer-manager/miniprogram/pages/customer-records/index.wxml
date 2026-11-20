@@ -1,0 +1,10 @@
+<view class="page">
+  <view class="title">酒吧业务记录</view>
+  <view class="card">
+    <record-item wx:for="{{records}}" wx:key="id" data-id="{{item.id}}" bindtap="openRecord" title="{{item.title}}"
+      description="{{item.description}}" customer="{{item.customerName}}" time="{{item.timeText}}"
+      amount="{{item.amountText}}" quantity="{{item.quantityText}}" kind="{{item.type}}" unit="{{item.unitText}}"
+      receipt-count="{{item.receipts.length || 0}}" />
+    <empty-state wx:if="{{!records.length}}" text="暂无记录" />
+  </view>
+</view>

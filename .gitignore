@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+.env
+.env.*
+!.env.example
+project.private.config.json
+*.xcuserstate
+xcuserdata/
+build/
+dist/
+.next/

@@ -1,0 +1,33 @@
+require('./upgrades.cjs');
+const assert=require('assert/strict');
+const clone=x=>JSON.parse(JSON.stringify(x));let definition;let modals=[];let navigation=[];
+global.Page=o=>definition=o;global.getCurrentPages=()=>[{route:'pages/customer-detail/index',options:{id:'c-old'}},{route:'pages/operation/index',options:{}}];
+wx.showToast=()=>{};wx.showModal=o=>modals.push(o);wx.redirectTo=o=>navigation.push(o.url);wx.navigateBack=()=>navigation.push('back');wx.switchTab=o=>navigation.push(o.url);wx.navigateTo=o=>navigation.push(o.url);
+function page(name,options={}){const file=require.resolve('../miniprogram/pages/'+name+'/index.ts');delete require.cache[file];require(file);const p={...definition,data:clone(definition.data),setData(v){Object.assign(this.data,v);if(v.dialogVisible)modals.push({content:v.dialogRows.join('\n'),success:r=>r.confirm?this.acceptDialog():this.cancelDialog()});},getTabBar(){return {setData(){}};}};if(p.onLoad)p.onLoad(options);if(p.onShow)p.onShow();return p;}
+const event=(value,dataset={})=>({detail:{value},currentTarget:{dataset}});
+const op=page('operation',{type:'DELIVERY',customerId:'c-old'});op.changeItem(event(10,{id:'p-u8'}));assert.equal(op.data.totalQuantity,10);assert.equal(op.data.totalAmount,'720');op.submit();assert.equal(modals.length,1);op.submit();assert.equal(modals.length,1);modals.pop().success({confirm:false});assert.equal(op.data.confirming,false);op.submit();modals.pop().success({confirm:true});assert.equal(navigation.pop(),'back');
+const detail=page('customer-detail',{id:'c-old'});assert.equal(detail.data.customer.receivable,4140);assert.equal(detail.data.customer.emptyBottleCount,672);assert.equal(detail.data.stocks[0].quantity,22);
+const bottle=page('operation',{type:'BOTTLE_RETURN',customerId:'c-old'});bottle.changeQuantity(event(12));bottle.submit();modals.pop().success({confirm:true});
+const pay=page('operation',{type:'PAYMENT',customerId:'c-old'});pay.amountInput(event('5000'));pay.submit();assert.equal(pay.data.error,'收款金额不能超过当前应收');assert.equal(modals.length,0);pay.amountInput(event('1000'));pay.submit();modals.pop().success({confirm:true});
+const home=page('home');assert.deepEqual(home.data.stats,{todayDelivery:10,todayPayment:'1,000',receivable:'5,000',emptyBottles:1764});
+const bars=page('customers');bars.search(event('示例酒吧 A'));assert.equal(bars.data.customers[0].receivable,3140);
+const records=page('records');assert.equal(records.data.records.length,3);records.filter(event('',{value:'PAYMENT'}));assert.equal(records.data.records.length,1);
+for(const name of ['entry','profile','manage','editor','about','customer-records'])page(name,{id:name==='customer-records'?'c-old':undefined});
+console.log('✓ 页面事件验收：数量输入、确认取消、防重复提交、返回详情、业务联动、首页刷新与记录筛选');
+
+const {storageService}=require('../miniprogram/services/storageService.ts');
+const {customerService}=require('../miniprogram/services/customerService.ts');
+storageService.reset();
+customerService.save({...customerService.get('c-old'),productPrices:{'p-u8':66}});
+const priced=page('operation',{type:'DELIVERY',customerId:'c-old'});
+priced.changeItem(event(2,{id:'p-u8'}));assert.equal(priced.data.totalAmount,'132');
+priced.priceInput(event('65.50',{id:'p-u8'}));assert.equal(priced.data.totalAmount,'131');
+priced.caseSizeInput(event('12',{id:'p-u8'}));assert.equal(priced.data.totalBottles,24);
+priced.selectCustomer('c-space');assert.equal(priced.data.totalAmount,'144');assert.equal(priced.data.totalBottles,24);
+priced.caseSizeInput(event('0',{id:'p-u8'}));priced.submit();assert.match(priced.data.error,/正整数/);assert.equal(modals.length,0);
+const loose=page('operation',{type:'BOTTLE_RETURN',customerId:'c-old'});loose.changeQuantity(event(13));loose.appendCase();assert.equal(loose.data.quantity,37);loose.returnCaseInput(event('12'));loose.appendCase();assert.equal(loose.data.quantity,49);loose.submit();assert.match(modals.at(-1).content,/49 瓶/);modals.pop().success({confirm:false});
+const edit=page('editor',{kind:'CUSTOMER',id:'c-old'});assert.equal(edit.data.prices[0].value,'66');edit.priceInput(event('64',{id:'p-u8'}));edit.save();modals.pop().success({confirm:true});assert.equal(customerService.get('c-old').productPrices['p-u8'],64);
+edit.remove();modals.pop().success({confirm:true});assert.match(edit.data.error,/欠款/);
+const fresh=customerService.save({name:'删除测试',contactName:'',phone:'',address:'',remark:''});const remove=page('editor',{kind:'CUSTOMER',id:fresh.id});remove.remove();modals.pop().success({confirm:true});assert(!customerService.list().some(c=>c.id===fresh.id));
+const productEdit=page('editor',{id:'p-u8'});productEdit.input(event('0',{field:'bottlesPerCase'}));productEdit.save();assert.match(productEdit.data.error,/正整数/);assert.equal(modals.length,0);
+console.log('✓ V1.1 页面事件：专属价、临时单价、包装实时计算、切换客户、整箱加散瓶、售价保存与删除拦截');

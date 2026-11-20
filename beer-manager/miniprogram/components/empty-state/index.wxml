@@ -1,0 +1,4 @@
+<view class="empty">
+  <view>{{text}}</view>
+  <view class="small hint">{{hint}}</view>
+</view>

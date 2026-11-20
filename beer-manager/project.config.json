@@ -1,0 +1,39 @@
+{
+  "description": "啤酒批发管家 V1 · 原生 TypeScript",
+  "miniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "beer-manager",
+  "setting": {
+    "es6": true,
+    "useCompilerPlugins": [
+      "typescript"
+    ],
+    "minified": true,
+    "urlCheck": false,
+    "postcss": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "enhance": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "libVersion": "3.7.6",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {}
+}

@@ -1,0 +1,4 @@
+.records {
+  padding: 0 26rpx;
+  margin-top: 20rpx;
+}

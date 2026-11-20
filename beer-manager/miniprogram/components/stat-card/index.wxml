@@ -1,0 +1,4 @@
+<view class="stat">
+  <view class="label">{{label}}</view>
+  <view class="stat-value {{tone}}">{{value}}<text class="unit">{{unit}}</text></view>
+</view>

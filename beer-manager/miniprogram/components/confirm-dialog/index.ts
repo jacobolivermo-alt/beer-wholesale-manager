@@ -1,0 +1,1 @@
+Component({ properties: { visible: { type: Boolean, value: false }, title: { type: String, value: '' }, rows: { type: Array, value: [] as string[] } }, methods: { stop() { }, cancel() { this.triggerEvent('cancel'); }, accept() { this.triggerEvent('accept'); } } });

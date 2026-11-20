@@ -1,0 +1,12 @@
+<view class="stepper">
+  <view class="step-main">
+    <button class="step-button" data-delta="-1" bindtap="change" disabled="{{value===0}}" aria-label="减少1{{unit}}">−</button>
+    <view class="step-value"><input class="step-input" aria-label="数量（{{unit}}）" type="number" maxlength="7" confirm-type="done" value="{{value}}" bindinput="input" /><text class="step-unit">{{unit}}</text></view>
+    <button class="step-button" data-delta="1" bindtap="change" aria-label="增加1{{unit}}">＋</button>
+  </view>
+  <view class="quick">
+    <button class="quick-button" data-delta="1" bindtap="change">+1</button>
+    <button class="quick-button" data-delta="5" bindtap="change">+5</button>
+    <button class="quick-button" data-delta="10" bindtap="change">+10</button>
+  </view>
+</view>

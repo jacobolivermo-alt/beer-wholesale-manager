@@ -1,0 +1,6 @@
+@import "../../styles/common.wxss";
+.customer-name { font-size: 34rpx; font-weight: 650; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.metrics { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22rpx 16rpx; margin-top: 24rpx; }
+.value { font-size: 38rpx; font-weight: 650; margin-top: 10rpx; line-height: 1.4; min-width: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.receivable-metric { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12rpx; padding-top: 18rpx; border-top: 1rpx solid var(--line); }
+.receivable-metric .value { margin-top: 0; }

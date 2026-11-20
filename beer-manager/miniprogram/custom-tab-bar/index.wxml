@@ -1,0 +1,6 @@
+<cover-view class="tabbar">
+  <cover-view wx:for="{{list}}" wx:key="url" class="tab {{selected===index?'selected':''}} {{index===2?'center':''}}" data-url="{{item.url}}" bindtap="switchTab">
+    <cover-view class="icon-slot"><cover-image wx:if="{{index!==2}}" class="nav-icon" src="{{selected===index?item.activeIcon:item.icon}}" /><cover-view wx:else class="create-icon">＋</cover-view></cover-view>
+    <cover-view class="tab-label">{{item.text}}</cover-view>
+  </cover-view>
+</cover-view>

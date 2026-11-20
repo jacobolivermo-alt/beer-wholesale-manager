@@ -1,0 +1,145 @@
+<view class="page with-actions">
+  <view class="title">{{title}}</view>
+  <view class="subtitle">
+    {{type==='DELIVERY'?'一次送多款，库存和账款自动更新':type==='PURCHASE'?'入库后，仓库数量立即更新':type==='BOTTLE_RETURN'?'空瓶按瓶回收，整箱和散瓶都能记':type==='PAYMENT'?'收到多少，记下多少':'以实际清点的数量为准'}}
+  </view>
+  <view class="card form">
+    <block wx:if="{{type==='STOCKTAKE'}}">
+      <view class="label">盘点位置</view>
+      <view class="choice-grid field"><button class="choice {{scope==='WAREHOUSE'?'active':''}}" data-value="WAREHOUSE"
+          bindtap="scopeChanged">仓库</button><button class="choice {{scope==='CUSTOMER'?'active':''}}"
+          data-value="CUSTOMER" bindtap="scopeChanged">酒吧</button></view>
+    </block>
+    <view class="field"
+      wx:if="{{type==='DELIVERY'||type==='PAYMENT'||type==='BOTTLE_RETURN'||(type==='STOCKTAKE'&&scope==='CUSTOMER')}}">
+      <view class="label">选择酒吧</view>
+      <picker range="{{customers}}" range-key="name" value="{{customerIndex}}" bindchange="customerChanged">
+        <view class="input row">
+          <text class="{{!customerId?'muted':''}}">{{customerName}}</text><text class="chevron">⌄</text>
+        </view>
+      </picker><text wx:if="{{!customers.length}}" class="footnote">请先到「我的 → 酒吧管理」新增酒吧。</text>
+    </view>
+    <block wx:if="{{type==='DELIVERY'}}">
+      <view class="divider" />
+      <view class="label">商品与数量</view>
+      <view wx:for="{{products}}" wx:key="id" class="delivery-row {{item.quantity>0?'is-selected':''}}">
+        <view class="delivery-top">
+          <view class="grow">
+            <view class="product-name">{{item.name}}</view>
+            <view class="price">默认 ¥{{item.priceText}} / 箱</view>
+            <view class="small muted">仓库 {{item.stock}} 箱 · 默认 {{item.bottlesPerCase}} 瓶/箱</view>
+          </view>
+          <quantity-stepper value="{{item.quantity}}" data-id="{{item.id}}" bind:change="changeItem" />
+        </view>
+        <view class="line-inputs">
+          <view class="grow">
+            <view class="label small">本次单价（元/箱）</view><input class="input compact" type="digit" maxlength="12"
+              value="{{item.unitPriceInput}}" data-id="{{item.id}}" bindinput="priceInput" />
+          </view>
+          <view class="grow">
+            <view class="label small">本次瓶数（瓶/箱）</view><input class="input compact" type="number" maxlength="5"
+              value="{{item.caseSizeInput}}" data-id="{{item.id}}" bindinput="caseSizeInput" />
+          </view>
+        </view>
+      </view>
+      <empty-state wx:if="{{!products.length}}" text="请先新增商品" />
+      <view class="field">
+        <view class="label">协商后货款（元）</view><input class="input amount" type="digit" maxlength="12"
+          value="{{finalAmount}}" placeholder="留空按计算金额 {{totalAmount}}" data-field="finalAmount"
+          bindinput="settlementInput" />
+        <view class="footnote">计算金额保留；欠款和已付款统计使用最终货款。</view>
+      </view>
+      <view class="label payment-label">付款状态</view>
+      <view class="choice-grid"><button class="choice {{paymentType==='CREDIT'?'active':''}}" data-value="CREDIT"
+          bindtap="choosePayment">赊账</button><button class="choice {{paymentType==='PAID'?'active':''}}"
+          data-value="PAID" bindtap="choosePayment">已付款</button></view>
+      <view class="footnote">按本次每箱瓶数自动产生待回空瓶。</view>
+    </block>
+    <block wx:if="{{type==='PURCHASE'||type==='STOCKTAKE'}}">
+      <view class="field">
+        <view class="label">选择商品</view>
+        <picker range="{{products}}" range-key="name" value="{{productIndex}}" bindchange="productChanged">
+          <view class="input row">
+            <text class="{{!productId?'muted':''}}">{{productName}}</text><text class="chevron">⌄</text>
+          </view>
+        </picker>
+      </view>
+      <view class="balance">
+        <view class="muted small">{{type==='STOCKTAKE'?'系统库存':'仓库现存'}}</view>
+        <view class="hero-num">{{systemStock}}<text class="small muted"> 箱</text></view>
+      </view>
+      <view class="quantity-field">
+        <view class="label">{{type==='STOCKTAKE'?'实际库存':'本次进货'}}（箱）</view>
+        <quantity-stepper value="{{quantity}}" unit="{{type==='BOTTLE_RETURN'?'瓶':'箱'}}" bind:change="changeQuantity" />
+      </view>
+      <view wx:if="{{type==='STOCKTAKE'&&scope==='CUSTOMER'}}" class="field">
+        <view class="label">实际散瓶（{{inventoryCaseSize}} 瓶/箱）</view><input class="input" type="number"
+          value="{{stocktakeLoose}}" bindinput="looseInput" />
+        <view class="footnote">当前系统散瓶 {{systemLoose}} 瓶；不足一箱的部分单独输入。</view>
+      </view>
+      <view wx:if="{{type==='STOCKTAKE'}}" class="footnote">确认后系统库存调整为 {{quantity}} 箱{{scope==='CUSTOMER'?'＋'+stocktakeLoose+' 瓶':''}}。欠款和待回空瓶保持不变。</view>
+    </block>
+    <block wx:if="{{type==='BOTTLE_RETURN'}}">
+      <view class="field">
+        <view class="label">回收哪种空瓶</view>
+        <picker range="{{bottleKinds}}" range-key="name" value="{{bottleKindIndex}}" bindchange="bottleKindChanged">
+          <view class="input row"><text>{{bottleKindName}}</text><text>⌄</text></view>
+        </picker>
+      </view>
+      <view class="footnote" wx:if="{{bottleProductId==='UNCLASSIFIED'}}">旧余额没有种类信息，先保留未分类；可在酒吧详情核对后分类。</view>
+      <view class="balance">
+        <view class="muted small">该种类待回空瓶</view>
+        <view class="hero-num">{{bottleKindBalance}}<text class="small muted"> 瓶</text></view>
+      </view>
+      <view class="quantity-field">
+        <view class="label">本次回收（瓶）</view>
+        <quantity-stepper value="{{quantity}}" unit="{{type==='BOTTLE_RETURN'?'瓶':'箱'}}" bind:change="changeQuantity" />
+      </view>
+      <view class="divider" />
+      <view class="label">整箱快捷回收</view>
+      <view class="case-converter"><input class="input case-input" type="number" maxlength="5" value="{{returnCaseSize}}"
+          bindinput="returnCaseInput" /><text class="small muted">瓶/箱</text><button class="secondary grow"
+          bindtap="appendCase">＋1 箱（{{returnCaseSize || '—'}} 瓶）</button></view>
+      <view class="footnote">上方数量始终为瓶数，可直接录入散瓶。</view>
+    </block>
+    <view class="inventory-option" wx:if="{{type==='BOTTLE_RETURN'}}">
+      <view class="inventory-toggle"><text class="label">根据回瓶估算剩余库存</text>
+        <switch checked="{{deductInventory}}" bindchange="deductChanged" color="#ae2632"
+          disabled="{{bottleProductId==='UNCLASSIFIED'}}" />
+      </view>
+      <view class="footnote">开启时，每回 1 瓶扣减该商品 1 瓶库存。已盘点扣除的酒应关闭此项，避免重复扣减；历史未分类须先分类。</view>
+    </view>
+    <block wx:if="{{type==='PAYMENT'}}">
+      <view class="balance">
+        <view class="muted small">当前应收</view>
+        <view class="hero-num danger">¥{{receivableText}}</view>
+      </view>
+      <view class="field">
+        <view class="label">收款金额（元）</view><input class="input amount" type="digit" maxlength="12" value="{{amount}}"
+          placeholder="输入本次收款金额" bindinput="amountInput" />
+      </view>
+      <view class="field">
+        <view class="label">本次协商减免（元）</view><input class="input" type="digit" value="{{forgivenAmount}}" maxlength="12"
+          data-field="forgivenAmount" bindinput="settlementInput" />
+        <view class="footnote">例如应收 3420、实收 3400，填减免 20 才会结清；留 0 则仍欠 20。</view>
+      </view>
+      <view class="label">支付方式</view>
+      <view class="choice-grid"><button wx:for="{{methods}}" wx:key="value"
+          class="choice {{paymentMethod===item.value?'active':''}}" data-value="{{item.value}}"
+          bindtap="chooseMethod">{{item.label}}</button></view>
+    </block>
+  </view>
+  <view class="card form" wx:if="{{type==='DELIVERY'||type==='PAYMENT'}}">
+    <view class="label">协商说明</view><input class="input" value="{{adjustmentReason}}" maxlength="120"
+      placeholder="调整或减免金额时必填，如协商抹零" data-field="adjustmentReason" bindinput="settlementInput" />
+  </view>
+  <view class="fixed-actions">
+    <view wx:if="{{error}}" class="footer-error">{{error}}</view>
+    <view wx:if="{{type==='DELIVERY'}}" class="small muted">计算金额 ¥{{totalAmount}} · 待回空瓶 ＋{{totalBottles}} 瓶</view>
+    <view wx:if="{{type==='DELIVERY'}}" class="row summary"><text>共 <text class="number">{{totalQuantity}}</text> 箱</text><text>货款 <text class="number danger">¥{{finalAmount || totalAmount}}</text></text></view><button
+      class="primary" bindtap="submit" disabled="{{confirming}}">确认{{title}}</button>
+  </view>
+</view>
+
+<confirm-dialog visible="{{dialogVisible}}" title="{{dialogTitle}}" rows="{{dialogRows}}" bind:accept="acceptDialog"
+  bind:cancel="cancelDialog" />

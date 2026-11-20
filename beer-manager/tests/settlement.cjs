@@ -1,0 +1,34 @@
+require('./pages.cjs');
+const assert=require('assert/strict');
+const service=n=>require('../miniprogram/services/'+n+'.ts');
+const {storageService}=service('storageService');const {deliveryService}=service('deliveryService');const {paymentService}=service('paymentService');const {customerService}=service('customerService');const {recordService}=service('recordService');const {analysisService}=service('analysisService');const {receiptService}=service('receiptService');
+const before=()=>JSON.stringify(storageService.read());let count=0;
+function test(name,fn){fn();count++;console.log('✓ '+name);}
+function atomic(fn,re){const b=before();assert.throws(fn,re);assert.equal(before(),b);}
+storageService.reset();
+test('计算 3420、协商 3400，赊账按 3400 入账且保存原价与说明',()=>{const d=deliveryService.createDelivery('c-old',[{productId:'p-u8',quantity:10,unitPrice:342}],'CREDIT',{amount:3400,reason:'协商抹零'});assert.equal(d.calculatedAmount,3420);assert.equal(d.totalAmount,3400);assert.equal(d.items[0].subtotal,3420);assert.equal(customerService.get('c-old').receivable,6820);assert.equal(recordService.list()[0].amount,3400);assert.match(recordService.list()[0].description,/协商抹零/);assert.equal(analysisService.summary().negotiatedText,'20');});
+test('已付款按最终货款计入实收，原始计算金额不重复计入',()=>{deliveryService.createDelivery('c-space',[{productId:'p-u8',quantity:1}],'PAID',{amount:70,reason:'优惠'});assert.equal(recordService.dashboard().todayPayment,70);assert.equal(analysisService.summary().collectedText,'70');assert.equal(analysisService.summary().salesText,'3,470');});
+test('未改金额兼容旧接口，负数、超过两位小数与无说明调整拒绝',()=>{for(const amount of [-1,0.001,Infinity])atomic(()=>deliveryService.createDelivery('c-old',[{productId:'p-u8',quantity:1}],'CREDIT',{amount,reason:'调整'}),/金额/);atomic(()=>deliveryService.createDelivery('c-old',[{productId:'p-u8',quantity:1}],'CREDIT',{amount:70,reason:' '}),/说明/);const d=deliveryService.createDelivery('c-old',[{productId:'p-u8',quantity:1}],'CREDIT');assert.equal(d.totalAmount,72);});
+storageService.reset();
+test('应收3420 实收3400 减免20，欠款归零，今日收款只计3400',()=>{paymentService.createPayment('c-old',3400,'WECHAT',{forgivenAmount:20,reason:'协商结清'});assert.equal(customerService.get('c-old').receivable,0);assert.equal(recordService.dashboard().todayPayment,3400);assert.equal(analysisService.summary().forgivenText,'20');assert.equal(analysisService.summary().collectedText,'3,400');assert.equal(storageService.read().payments[0].forgivenAmount,20);});
+test('减免与实收超应收、负减免、无说明减免全部拒绝',()=>{atomic(()=>paymentService.createPayment('c-1988',1800,'CASH',{forgivenAmount:61,reason:'减免'}),/合计/);atomic(()=>paymentService.createPayment('c-1988',1800,'CASH',{forgivenAmount:-1,reason:'减免'}),/金额/);atomic(()=>paymentService.createPayment('c-1988',1800,'CASH',{forgivenAmount:60,reason:''}),/说明/);});
+test('不填减免时仍为部分收款，差额继续欠款',()=>{paymentService.createPayment('c-1988',1800,'CASH');assert.equal(customerService.get('c-1988').receivable,60);});
+test('时间筛选只限制业务量，当前应收和待回瓶保持实时口径',()=>{storageService.transaction(db=>{db.payments[0].createdAt='2020-01-01T00:00:00.000Z';});assert.equal(analysisService.summary('7').collectedText,'1,800');assert.equal(analysisService.summary('ALL').collectedText,'5,200');assert.equal(analysisService.summary('7').receivableText,'60');assert.equal(analysisService.summary('ALL').receivableText,'60');const {dayKey}=require('../miniprogram/utils/format.ts');assert.equal(dayKey('2026-10-07T12:00:00.000Z'),'2026-10-07');});
+let definition,modal;global.Page=o=>definition=o;wx.showModal=o=>modal=o;
+function page(name,options){const f=require.resolve('../miniprogram/pages/'+name+'/index.ts');delete require.cache[f];require(f);const p={...definition,data:JSON.parse(JSON.stringify(definition.data)),setData(d){Object.assign(this.data,d);if(d.dialogVisible)modal={content:d.dialogRows.join('\n'),success:r=>r.confirm?this.acceptDialog():this.cancelDialog()};},getTabBar(){}};p.onLoad?.(options);return p;}
+const event=(value,field)=>({detail:{value},currentTarget:{dataset:{field}}});
+storageService.reset();
+test('送货表单保留计算值，改总额需说明，确认执行协商金额',()=>{const p=page('operation',{type:'DELIVERY',customerId:'c-old'});p.changeItem({detail:{value:10},currentTarget:{dataset:{id:'p-u8'}}});p.settlementInput(event('700','finalAmount'));p.submit();assert.match(p.data.error,/说明/);p.settlementInput(event('抹零','adjustmentReason'));p.submit();assert.match(modal.content,/最终货款 ¥700/);modal.success({confirm:true});assert.equal(customerService.get('c-old').receivable,4120);});
+test('收款表单确认实收、减免和剩余应收，保存后同步归零',()=>{const p=page('operation',{type:'PAYMENT',customerId:'c-old'});p.amountInput({detail:{value:'4100'}});p.settlementInput(event('20','forgivenAmount'));p.settlementInput(event('协商结清','adjustmentReason'));p.submit();assert.match(modal.content,/剩余应收 ¥0/);modal.success({confirm:true});assert.equal(customerService.get('c-old').receivable,0);});
+(async()=>{
+ let saved=0,removed=[];let failAt=Infinity;
+ wx.getFileSystemManager=()=>({saveFile(o){saved++;if(saved===failAt)o.fail({errMsg:'quota'});else o.success({savedFilePath:'saved/'+saved});},unlink(o){removed.push(o.filePath);o.success?.();}});
+ const recordId=recordService.list()[0].id;
+ await receiptService.attach(recordId,[{tempFilePath:'temp/a',size:1024},{tempFilePath:'temp/b',size:1024}]);assert.equal(receiptService.list(recordId).length,2);assert.equal(storageService.read().records[0].receipts[0].path,'saved/1');console.log('✓ 收据持久路径保存并关联正确流水');count++;
+ await assert.rejects(()=>receiptService.attach(recordId,[{tempFilePath:'temp/a',size:6*1024*1024}]),/5MB/);assert.equal(receiptService.list(recordId).length,2);
+ await assert.rejects(()=>receiptService.attach(recordId,Array(5).fill({tempFilePath:'temp/a',size:1})),/6 张/);console.log('✓ 收据大小和数量限制无部分写入');count++;
+ failAt=saved+2;await assert.rejects(()=>receiptService.attach(recordId,[{tempFilePath:'temp/a',size:1},{tempFilePath:'temp/b',size:1}]),/保存失败/);assert.equal(receiptService.list(recordId).length,2);assert(removed.includes('saved/3'));console.log('✓ 多图中途失败回滚关联并清理已保存图片');count++;
+ receiptService.remove(recordId,receiptService.list(recordId)[0].id);assert.equal(receiptService.list(recordId).length,1);assert(removed.includes('saved/1'));assert(storageService.read().records.some(r=>r.id===recordId));console.log('✓ 移除收据保留业务流水');count++;
+ const detail=page('record-detail',{id:recordId});detail.onShow();assert.equal(detail.data.receipts.length,1);wx.chooseMedia=o=>o.fail({errMsg:'chooseMedia:fail cancel'});detail.upload();assert.equal(detail.data.busy,false);assert.equal(detail.data.error,'');storageService.reset();assert(removed.includes('saved/2'));assert.equal(storageService.read().records.length,0);console.log('✓ 详情展示附件与选择取消恢复按钮');count++;
+ console.log('\n'+count+' 个 V1.2 新增验收场景通过');
+})().catch(e=>{console.error(e);process.exitCode=1;});

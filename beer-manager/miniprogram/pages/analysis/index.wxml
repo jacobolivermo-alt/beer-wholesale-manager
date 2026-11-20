@@ -1,0 +1,85 @@
+<view class="page analysis-page">
+  <view class="eyebrow">经营概览</view>
+  <view class="title">每一笔，都看得清</view>
+  <view class="subtitle">按周、按月复盘送货和回款</view>
+  <view class="filters"><button class="filter {{period==='WEEK'?'active':''}}" data-value="WEEK"
+      bindtap="choose">周统计</button><button class="filter {{period==='MONTH'?'active':''}}" data-value="MONTH"
+      bindtap="choose">月统计</button><button class="filter {{period==='ALL'?'active':''}}" data-value="ALL"
+      bindtap="choose">全部</button></view>
+  <view class="period-nav"><button class="period-arrow" data-delta="-1" bindtap="shift"
+      wx:if="{{period!=='ALL'}}">‹</button>
+    <view class="grow">
+      <view class="period-label">
+        {{period==='WEEK'?(offset===0?'本周':'所选周'):period==='MONTH'?(offset===0?'本月':'所选月'):'累计统计'}}</view>
+      <view class="small muted">{{summary.rangeLabel}}</view>
+    </view><button class="period-arrow" data-delta="1" bindtap="shift" disabled="{{offset===0}}"
+      wx:if="{{period!=='ALL'}}">›</button>
+  </view>
+  <view class="analysis-grid">
+    <stat-card label="送货金额" value="¥{{summary.salesText}}" />
+    <stat-card label="实际收款" value="¥{{summary.collectedText}}" tone="success" />
+    <stat-card label="送货数量" value="{{summary.quantity}}" unit="箱" />
+    <stat-card label="回收空瓶" value="{{summary.returned}}" unit="瓶" />
+  </view>
+  <view class="card chart-card">
+    <view class="section-head">业务趋势</view>
+    <view class="chart-tabs"><button class="chart-tab {{chartKind==='MONEY'?'chosen':''}}" data-value="MONEY"
+        bindtap="chooseChart">金额</button><button class="chart-tab {{chartKind==='DELIVERY'?'chosen':''}}"
+        data-value="DELIVERY" bindtap="chooseChart">送货</button><button
+        class="chart-tab {{chartKind==='BOTTLE'?'chosen':''}}" data-value="BOTTLE" bindtap="chooseChart">回瓶</button>
+    </view>
+    <view class="legend">
+      <text class="legend-dot {{chartKind==='BOTTLE'?'orange':''}}"/><text>{{chartKind==='MONEY'?'送货金额':chartKind==='DELIVERY'?'送货箱数':'回瓶瓶数'}}</text>
+      <block wx:if="{{chartKind==='MONEY'}}"><text class="legend-dot green"/><text>实际收款</text></block>
+    </view>
+    <trend-chart points="{{chart.points}}" max-text="{{chart.maxText}}" empty="{{chart.empty}}"
+      dual="{{chartKind==='MONEY'}}" unit="{{chartKind==='MONEY'?'元':chartKind==='DELIVERY'?'箱':'瓶'}}"
+      tone="{{chartKind==='BOTTLE'?'orange':'red'}}" />
+    <view class="footnote">{{summary.chartNote}}</view>
+  </view>
+  <view class="card form">
+    <view class="section-head">协商与减免</view>
+    <view class="row line"><text class="muted">送货协商差额</text><text class="number">¥{{summary.negotiatedText}}</text>
+    </view>
+    <view class="row line"><text class="muted">收款减免</text><text class="number">¥{{summary.forgivenText}}</text></view>
+    <view class="footnote">差额为计算货款减最终货款；负数表示加价。实收不包含减免。</view>
+  </view>
+  <view class="card form">
+    <view class="section-head">当前待处理</view>
+    <view class="small muted">实时余额，不随统计周期变化</view>
+    <view class="row line"><text>当前应收</text><text class="danger number">¥{{summary.receivableText}}</text></view>
+    <view class="row line"><text>待回空瓶</text><text class="number">{{summary.bottles}} 瓶</text></view>
+  </view>
+  <view class="card form">
+    <view class="section-head">酒吧送货排行</view>
+    <view class="rank-row" wx:for="{{summary.customers}}" wx:key="id">
+      <view class="row"><text>{{index+1}}　{{item.name}}</text><text class="number">¥{{item.amountText}}</text></view>
+      <view class="rank-track">
+        <view class="rank-fill" style="width:{{item.width}}%" />
+      </view>
+      <view class="small muted">{{item.quantity}} 箱</view>
+    </view>
+    <empty-state wx:if="{{!summary.customers.length}}" text="本期暂无送货" />
+  </view>
+  <view class="card form">
+    <view class="section-head">商品送货排行</view>
+    <view class="rank-row" wx:for="{{summary.products}}" wx:key="id">
+      <view class="row"><text>{{item.name}}</text><text class="number">{{item.quantity}} 箱</text></view>
+      <view class="rank-track">
+        <view class="rank-fill green" style="width:{{item.width}}%" />
+      </view>
+    </view>
+    <empty-state wx:if="{{!summary.products.length}}" text="本期暂无商品送货" />
+  </view>
+  <view class="card form">
+    <view class="row daily-toggle" bindtap="toggleDaily">
+      <text class="section-head">每日明细</text><text class="danger small">{{showDaily?'收起 −':'展开 ＋'}}</text></view>
+    <block wx:if="{{showDaily}}">
+      <view class="row small muted line"><text>日期</text><text>送货 / 实收</text></view>
+      <view class="row line" wx:for="{{summary.daily}}" wx:key="day">
+        <text>{{item.day}}</text><text>¥{{item.salesText}} / ¥{{item.collectedText}}</text></view>
+      <empty-state wx:if="{{!summary.daily.length}}" text="本期暂无业务明细" />
+    </block>
+  </view>
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+</view>

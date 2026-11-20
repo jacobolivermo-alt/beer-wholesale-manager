@@ -1,0 +1,20 @@
+<view class="card">
+  <view class="row"><text class="customer-name">{{name}}</text><text class="chevron">›</text></view>
+  <view class="metrics">
+    <view>
+      <view class="small muted">当前库存</view>
+      <view class="value">{{stock}}<text class="small muted"> 箱</text>
+        <view class="small muted" wx:if="{{loose}}">＋{{loose}} 散瓶</view>
+      </view>
+    </view>
+    <view>
+      <view class="small muted">待回空瓶</view>
+      <view class="value">{{bottles}}<text class="small muted"> 瓶</text></view>
+    </view>
+    <view class="receivable-metric">
+      <view class="small muted">当前应收</view>
+      <view class="value danger" wx:if="{{owing}}">¥{{amount}}</view>
+      <view class="value success small" wx:else>已结清</view>
+    </view>
+  </view>
+</view>

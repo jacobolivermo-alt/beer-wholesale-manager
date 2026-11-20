@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="title">啤酒批发管家</view>
+  <view class="subtitle">V1.5.1 · 为日常配送记好每一笔</view>
+  <view class="card about">
+    <view class="section-title">酒 · 空瓶 · 钱</view>
+    <view>管理仓库和酒吧库存，记录送货、进货、回瓶、收款和盘点。</view>
+    <view class="divider" />
+    <view>酒吧库存按送货增加，分类回瓶可按瓶估算扣减，支持整箱和散瓶盘点校准。空瓶延迟回收或丢失会影响估算；已盘点扣除的酒须关闭回瓶库存扣减。</view>
+    <view class="divider" />
+    <view>空瓶按瓶记录，每箱默认 24 瓶且可调整。每个酒吧可配置专属售价，本次送货也可修改单价。已付款送货计入今日收款。</view>
+    <view class="divider" />
+    <view>本地数据不跨设备同步，暂不提供备份。正式经营前建议先验证流程。</view>
+  </view>
+</view>

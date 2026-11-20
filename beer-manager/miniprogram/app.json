@@ -1,0 +1,62 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/customers/index",
+    "pages/entry/index",
+    "pages/records/index",
+    "pages/profile/index",
+    "pages/customer-detail/index",
+    "pages/operation/index",
+    "pages/manage/index",
+    "pages/editor/index",
+    "pages/about/index",
+    "pages/customer-records/index",
+    "pages/analysis/index",
+    "pages/record-detail/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "啤酒批发管家",
+    "navigationBarBackgroundColor": "#f5f6f3",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f6f3"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#9298a2",
+    "selectedColor": "#ae2632",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/customers/index",
+        "text": "酒吧"
+      },
+      {
+        "pagePath": "pages/entry/index",
+        "text": "记一笔"
+      },
+      {
+        "pagePath": "pages/records/index",
+        "text": "记录"
+      },
+      {
+        "pagePath": "pages/profile/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {
+    "stat-card": "/components/stat-card/index",
+    "product-row": "/components/product-row/index",
+    "customer-card": "/components/customer-card/index",
+    "quantity-stepper": "/components/quantity-stepper/index",
+    "empty-state": "/components/empty-state/index",
+    "record-item": "/components/record-item/index",
+    "confirm-dialog": "/components/confirm-dialog/index",
+    "trend-chart": "/components/trend-chart/index"
+  },
+  "sitemapLocation": "sitemap.json"
+}

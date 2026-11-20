@@ -1,0 +1,14 @@
+<view class="page tab-page">
+  <view class="title">业务记录</view>
+  <view class="subtitle">每一笔酒、空瓶和钱都有迹可循</view>
+  <view class="filters"><button wx:for="{{filters}}" wx:key="value" class="filter {{filter===item.value?'active':''}}"
+      data-value="{{item.value}}" bindtap="filter">{{item.label}}</button></view>
+  <view class="small muted">共 {{records.length}} 笔</view>
+  <view class="card records">
+    <record-item wx:for="{{records}}" wx:key="id" data-id="{{item.id}}" bindtap="openRecord" title="{{item.title}}"
+      description="{{item.description}}" customer="{{item.customerName}}" time="{{item.timeText}}"
+      amount="{{item.amountText}}" quantity="{{item.quantityText}}" kind="{{item.type}}" unit="{{item.unitText}}"
+      receipt-count="{{item.receipts.length || 0}}" />
+    <empty-state wx:if="{{!records.length}}" text="暂无记录" hint="完成业务操作后，流水会出现在这里" />
+  </view>
+</view>

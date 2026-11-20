@@ -1,0 +1,20 @@
+<view class="chart">
+  <view class="axis">最高 {{maxText}} {{unit}}</view>
+  <scroll-view scroll-x class="chart-scroll">
+    <view class="plot" style="min-width:{{points.length>7?points.length*78:0}}rpx">
+      <view class="column" wx:for="{{points}}" wx:key="label">
+        <view class="bars">
+          <view class="bar-wrap"><text class="bar-value" wx:if="{{item.firstHeight}}">{{item.firstText}}</text>
+            <view class="bar {{tone}}" style="height:{{item.firstHeight}}%" />
+          </view>
+          <view class="bar-wrap" wx:if="{{dual}}">
+            <text class="bar-value" wx:if="{{item.secondHeight}}">{{item.secondText}}</text>
+            <view class="bar green" style="height:{{item.secondHeight}}%" />
+          </view>
+        </view>
+        <view class="tick">{{item.label}}</view>
+      </view>
+    </view>
+  </scroll-view>
+  <view class="chart-empty" wx:if="{{empty}}">本期暂无业务，图表为 0</view>
+</view>

@@ -1,0 +1,10 @@
+<view class="page tab-page">
+  <view class="title">记一笔</view>
+  <view class="subtitle">选一件事，几步就记好</view>
+  <view class="action-grid"><button class="action-card" wx:for="{{actions}}" wx:key="type" data-type="{{item.type}}"
+      bindtap="open"><text class="action-icon">{{item.icon}}</text>
+      <view class="action-name">{{item.name}}</view>
+      <view class="action-hint">{{item.hint}}</view>
+    </button></view>
+  <view class="footnote">默认每箱 24 瓶；按本次包装产生待回空瓶。</view>
+</view>

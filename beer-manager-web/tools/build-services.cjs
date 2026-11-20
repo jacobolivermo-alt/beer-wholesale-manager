@@ -1,0 +1,6 @@
+const fs=require('fs'),path=require('path'),ts=require(process.env.TYPESCRIPT_PATH || 'typescript');
+const base=path.resolve(__dirname,'../../beer-manager/miniprogram'),out=path.resolve(__dirname,'..');
+const files=[];for(const dir of ['services','mock','utils'])for(const name of fs.readdirSync(path.join(base,dir)))if(name.endsWith('.ts') && (dir!=='utils'||name==='format.ts'))files.push(dir+'/'+name);
+let code='const BeerModules = {};\n';for(const file of files){const name=file.replace(/\.ts$/,'');const result=ts.transpileModule(fs.readFileSync(path.join(base,file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}});code+=`BeerModules[${JSON.stringify(name)}] = function(require,module,exports){\n${result.outputText}\n};\n`;}
+code+=`const BeerCache={}; function beerRequire(id){if(BeerCache[id])return BeerCache[id].exports;const module={exports:{}};BeerCache[id]=module;BeerModules[id](request=>{const parts=id.split('/');parts.pop();for(const p of request.split('/')){if(p==='..')parts.pop();else if(p!=='.')parts.push(p);}return beerRequire(parts.join('/'));},module,module.exports);return module.exports;} window.beerRequire=beerRequire;\n`;
+fs.writeFileSync(path.join(out,'services.js'),code);

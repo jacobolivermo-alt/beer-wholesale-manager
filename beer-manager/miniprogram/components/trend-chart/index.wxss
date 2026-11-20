@@ -1,0 +1,81 @@
+.chart {
+  position: relative;
+  margin-top: 24rpx
+}
+
+.axis {
+  font-size: 22rpx;
+  color: #9199a5;
+  margin-bottom: 20rpx
+}
+
+.plot {
+  display: flex;
+  width: 100%;
+  padding-top: 28rpx
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  text-align: center
+}
+
+.bars {
+  height: 210rpx;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6rpx;
+  border-bottom: 1rpx solid #dce1e8;
+  background: linear-gradient(to top, transparent 49%, #f1f3f6 50%, transparent 51%)
+}
+
+.bar-wrap {
+  height: 100%;
+  width: 18rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative
+}
+
+.bar {
+  width: 100%;
+  border-radius: 4rpx 4rpx 0 0;
+  flex-shrink: 0;
+  background: #ba2630
+}
+
+.bar.green {
+  background: #258261
+}
+
+.bar.orange {
+  background: #cd852d
+}
+
+.bar-value {
+  font-size: 16rpx;
+  color: #596575;
+  white-space: nowrap;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none
+}
+
+.tick {
+  font-size: 20rpx;
+  color: #778291;
+  margin-top: 16rpx;
+  white-space: nowrap
+}
+
+.chart-empty {
+  text-align: center;
+  font-size: 24rpx;
+  color: #959eaa;
+  padding-top: 16rpx
+}

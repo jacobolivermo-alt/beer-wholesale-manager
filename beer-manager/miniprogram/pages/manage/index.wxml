@@ -1,0 +1,35 @@
+<view class="page with-actions">
+  <view class="title">{{kind==='PRODUCT'?'商品管理':'酒吧管理'}}</view>
+  <view class="subtitle">点击资料进行编辑</view>
+  <view class="list" wx:if="{{kind==='PRODUCT'}}">
+    <view class="product-tabs">
+      <button class="{{!showDeleted?'selected':''}}" data-deleted="false" bindtap="switchProducts">在用商品</button>
+      <button class="{{showDeleted?'selected':''}}" data-deleted="true" bindtap="switchProducts">已删除 {{deletedCount}}</button>
+    </view>
+    <view class="card" wx:for="{{products}}" wx:key="id">
+      <view class="name">{{item.name}}</view>
+      <view class="subtitle">¥{{item.priceText}} / 箱 · {{item.bottlesPerCase}} 瓶/箱 · 库存 {{item.stock}} 箱</view>
+      <view class="subtitle">低于 {{item.lowStockThreshold}} 箱提醒</view>
+      <view class="product-buttons" wx:if="{{!showDeleted}}">
+        <button data-id="{{item.id}}" bindtap="edit">编辑 / 调整库存</button>
+        <button class="delete-btn" data-id="{{item.id}}" bindtap="removeProduct">删除</button>
+      </view>
+      <button wx:else class="product-restore" data-id="{{item.id}}" bindtap="restoreProduct">恢复商品</button>
+    </view>
+    <empty-state wx:if="{{!products.length}}" text="{{showDeleted?'暂无已删除商品':'暂无商品，点击下方新增'}}" />
+  </view>
+  <view class="list" wx:else>
+    <view class="card row" wx:for="{{customers}}" wx:key="id" data-id="{{item.id}}" bindtap="edit">
+      <view class="grow">
+        <view class="name">{{item.name}}</view>
+        <view class="subtitle">{{item.contactName || '未填写联系人'}} · {{item.phone || '未填写电话'}}</view>
+      </view><button class="delete-btn" data-id="{{item.id}}"
+        catchtap="remove">删除</button><text class="chevron">›</text>
+    </view>
+    <empty-state wx:if="{{!customers.length}}" text="暂无酒吧" />
+  </view>
+  <view class="fixed-actions"><button class="primary" bindtap="edit">＋ 新增{{kind==='PRODUCT'?'商品':'酒吧'}}</button></view>
+</view>
+
+<confirm-dialog visible="{{dialogVisible}}" title="{{dialogTitle}}" rows="{{dialogRows}}" bind:accept="acceptDialog"
+  bind:cancel="cancelDialog" />

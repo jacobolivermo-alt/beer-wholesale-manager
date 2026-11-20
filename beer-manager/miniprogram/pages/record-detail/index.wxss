@@ -1,0 +1,22 @@
+.receipt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin: 24rpx 0
+}
+
+.receipt-image {
+  width: 100%;
+  height: 220rpx;
+  border-radius: 8rpx
+}
+
+.receipt-grid button {
+  margin-top: 12rpx
+}
+
+.form { margin-top: 28rpx; }
+.form .section-title { margin: 0; }
+.form .row { flex-wrap: wrap; align-items: baseline; }
+.receipt-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.receipt-grid button { width: 100%; min-height: 104rpx; }

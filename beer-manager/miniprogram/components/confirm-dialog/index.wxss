@@ -1,0 +1,12 @@
+.dialog-mask { position: fixed; inset: 0; background: rgba(21,26,34,.48); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 28rpx; box-sizing: border-box; }
+.dialog { width: 100%; max-width: 670rpx; max-height: 84vh; background: #fff; border-radius: 24rpx; overflow: hidden; }
+.dialog-header { padding: 28rpx; border-bottom: 1rpx solid #e6e8e4; }
+.dialog-eyebrow { color: #6f7782; font-size: 24rpx; margin-bottom: 10rpx; }
+.dialog-title { color: #252827; font-size: 36rpx; font-weight: 700; line-height: 1.4; overflow-wrap: anywhere; }
+.dialog-scroll { max-height: 43vh; background: #fff; }
+.dialog-row { padding: 24rpx 28rpx; border-bottom: 1rpx solid #eef0f4; color: #3e4856; font-size: 28rpx; line-height: 1.65; text-align: left; overflow-wrap: anywhere; }
+.dialog-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14rpx; padding: 24rpx 28rpx; border-top: 1rpx solid #e6e8e4; background: #fff; }
+.dialog-button { min-width: 0; width: 100%; margin: 0; height: 104rpx; display: flex; align-items: center; justify-content: center; padding: 16rpx 8rpx; font-size: 28rpx; font-weight: 600; border-radius: 12rpx; line-height: 1.4; }
+.dialog-button::after { border: 0; }
+.secondary { background: #eef1f4; color: #3e4856; }
+.primary { background: #ae2632; color: #fff; }

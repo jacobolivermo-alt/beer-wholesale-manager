@@ -1,0 +1,30 @@
+<view class="page tab-page">
+  <view class="title">我的</view>
+  <view class="subtitle">基础资料与系统设置</view>
+  <view class="card menu">
+    <view class="menu-row row" bindtap="analysis">
+      <view>
+        <view>经营分析</view>
+        <view class="small muted hint">周报、月报、趋势与排行</view>
+      </view><text class="chevron">›</text>
+    </view>
+    <view class="menu-row row" data-kind="PRODUCT" bindtap="manage">
+      <view>
+        <view>商品管理</view>
+        <view class="small muted hint">售价、库存与提醒值</view>
+      </view><text class="chevron">›</text>
+    </view>
+    <view class="menu-row row" data-kind="CUSTOMER" bindtap="manage">
+      <view>
+        <view>酒吧管理</view>
+        <view class="small muted hint">联系人、电话与地址</view>
+      </view><text class="chevron">›</text>
+    </view>
+    <view class="menu-row row" bindtap="reset"><text class="danger">数据重置</text><text class="chevron">›</text></view>
+    <view class="menu-row row" bindtap="about"><text>关于系统</text><text class="chevron">›</text></view>
+  </view>
+  <view class="footnote">V1.5.1 · 数据仅保存在当前设备<br />卸载小程序或清理缓存会移除业务数据。</view>
+</view>
+
+<confirm-dialog visible="{{dialogVisible}}" title="{{dialogTitle}}" rows="{{dialogRows}}" bind:accept="acceptDialog"
+  bind:cancel="cancelDialog" />

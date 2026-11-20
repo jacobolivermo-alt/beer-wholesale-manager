@@ -1,0 +1,1 @@
+Component({ properties: { points: { type: Array, value: [] as object[] }, dual: { type: Boolean, value: true }, empty: { type: Boolean, value: true }, maxText: { type: String, value: '0' }, unit: { type: String, value: '元' }, tone: { type: String, value: 'red' } } });

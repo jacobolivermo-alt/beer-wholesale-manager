@@ -1,0 +1,1 @@
+Component({ properties: { loose: { type: Number, value: 0 }, name: { type: String, value: '' }, stock: { type: Number, value: 0 }, bottles: { type: Number, value: 0 }, amount: { type: String, value: '0' }, owing: { type: Boolean, value: false } } });

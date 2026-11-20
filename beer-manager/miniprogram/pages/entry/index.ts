@@ -1,0 +1,2 @@
+import { tab, openOperation } from '../../utils/ui';
+Page({ data: { actions: [{ type: 'DELIVERY', name: '送货', icon: '↗', hint: '出库 · 记账 · 空瓶同步' }, { type: 'PURCHASE', name: '进货', icon: '↓', hint: '补充仓库库存' }, { type: 'BOTTLE_RETURN', name: '回瓶', icon: '↩', hint: '整箱或散瓶，按瓶记录' }, { type: 'PAYMENT', name: '收款', icon: '¥', hint: '收到一笔，减少欠款' }, { type: 'STOCKTAKE', name: '盘点', icon: '≡', hint: '核对实际库存' }] }, onShow() { tab(this, 2); }, open(e: UIEvent) { openOperation(e.currentTarget.dataset.type); } });

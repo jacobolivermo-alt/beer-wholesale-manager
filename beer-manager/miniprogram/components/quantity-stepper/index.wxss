@@ -1,0 +1,11 @@
+@import "../../styles/common.wxss";
+:host { display: block; width: 100%; flex-shrink: 0; min-width: 0; }
+.stepper { width: 100%; }
+.step-main { display: flex; align-items: center; border: 1rpx solid #dbe1e8; border-radius: 12rpx; overflow: hidden; background: #fff; }
+.step-button { width: 104rpx; height: 104rpx; flex-shrink: 0; min-width: 0; background: #f1f4f6; color: var(--ink); font-size: 38rpx; display: flex; align-items: center; justify-content: center; border-radius: 0; }
+.step-value { display: flex; flex: 1; min-width: 0; align-items: center; justify-content: center; gap: 8rpx; padding: 0 8rpx; }
+.step-input { flex: 1; width: 0; min-width: 0; text-align: center; height: 104rpx; font-size: 38rpx; font-weight: 650; font-variant-numeric: tabular-nums; }
+.step-unit { color: var(--muted); font-size: 24rpx; flex-shrink: 0; padding-right: 12rpx; }
+.quick { display: flex; gap: 12rpx; margin-top: 14rpx; }
+.quick-button { flex: 1; width: 0; min-width: 0; min-height: 104rpx; display: flex; align-items: center; justify-content: center; background: #f1f4f6; color: #535e6b; padding: 20rpx 0; font-size: 28rpx; font-weight: 600; }
+.step-button::after, .quick-button::after { border: 0; }

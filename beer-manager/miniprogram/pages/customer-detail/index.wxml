@@ -1,0 +1,65 @@
+<view class="page with-actions">
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <block wx:if="{{customer}}">
+    <view class="row">
+      <view class="title grow">{{customer.name}}</view><text class="danger small link-action" bindtap="edit">编辑资料 ›</text>
+    </view>
+    <view class="subtitle">
+      {{customer.contactName || '联系人待补充'}}<text wx:if="{{customer.phone}}" class="danger" bindtap="call"> · {{customer.phone}}</text>
+    </view>
+    <view class="subtitle">{{customer.address || '地址待补充'}}</view>
+    <view class="footnote" wx:if="{{customer.remark}}">{{customer.remark}}</view>
+    <view class="section-title">当前库存</view>
+    <view class="small muted">送货增加，回瓶可估算扣减；盘点校准实际数量。</view>
+    <view class="card inventory">
+      <view class="stock-detail-row" wx:for="{{stocks}}" wx:key="id">
+        <view class="row"><text>{{item.name}}</text><text class="number">{{item.quantity}} 箱<text wx:if="{{item.looseBottleQuantity}}">＋{{item.looseBottleQuantity}} 瓶</text></text></view>
+        <view class="small muted">{{item.inventoryCaseSize}} 瓶/箱 · 合计 {{item.totalBottles}} 瓶</view>
+      </view>
+      <empty-state wx:if="{{!stocks.length}}" text="暂无商品" />
+    </view>
+    <view class="balances">
+      <view class="card">
+        <view class="label">待回空瓶</view>
+        <view class="number">{{customer.emptyBottleCount}}<text class="small muted"> 瓶</text></view>
+      </view>
+      <view class="card">
+        <view class="label">当前应收</view>
+        <view class="number {{customer.receivable>0 ? 'danger' : 'success'}}">¥{{amountText}}</view>
+      </view>
+    </view>
+    <view class="card form">
+      <view class="section-title">待回空瓶明细</view>
+      <view class="row bottle-balance" wx:for="{{bottleKinds}}" wx:key="productId">
+        <text>{{item.name}}</text><text class="number">{{item.quantity}} 瓶</text></view>
+      <empty-state wx:if="{{!bottleKinds.length}}" text="空瓶已回齐" />
+      <block wx:if="{{unclassified}}">
+        <view class="divider" />
+        <view class="label">核对历史空瓶种类</view>
+        <view class="footnote">只分类旧余额，不增加或回收空瓶。</view>
+        <picker range="{{products}}" range-key="name" value="{{classProductIndex}}" bindchange="classProduct">
+          <view class="input">{{products[classProductIndex].name || '请选择商品'}} ⌄</view>
+        </picker>
+        <view class="classify-controls"><input class="input grow" type="number" value="{{classQuantity}}" placeholder="分类瓶数"
+            bindinput="classInput" /><button class="secondary" bindtap="classify">确认分类</button></view>
+      </block>
+    </view>
+    <view class="row">
+      <view class="section-title">最近业务记录</view><text class="small danger link-action" bindtap="allRecords">全部 ›</text>
+    </view>
+    <view class="card records">
+      <record-item wx:for="{{records}}" wx:key="id" data-id="{{item.id}}" bindtap="openRecord" title="{{item.title}}"
+        description="{{item.description}}" customer="{{item.customerName}}" time="{{item.timeText}}"
+        amount="{{item.amountText}}" quantity="{{item.quantityText}}" kind="{{item.type}}" unit="{{item.unitText}}"
+        receipt-count="{{item.receipts.length || 0}}" />
+      <empty-state wx:if="{{!records.length}}" text="还没有业务记录" hint="从下方按钮记下第一笔" />
+    </view>
+    <view class="fixed-actions detail-actions"><button class="primary" data-type="DELIVERY"
+        bindtap="operate">送货</button><button class="secondary" data-type="BOTTLE_RETURN"
+        bindtap="operate">回瓶</button><button class="secondary" data-type="PAYMENT" bindtap="operate">收款</button><button
+        class="secondary" data-type="STOCKTAKE" bindtap="operate">盘点</button></view>
+  </block>
+</view>
+
+<confirm-dialog visible="{{dialogVisible}}" title="{{dialogTitle}}" rows="{{dialogRows}}" bind:accept="acceptDialog"
+  bind:cancel="cancelDialog" />
